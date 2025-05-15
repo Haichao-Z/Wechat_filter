@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">微信提醒筛选器</string>
+    <string name="settings_title">设置</string>
+    <string name="contact_management_title">管理联系人</string>
+    <string name="notification_channel_name">重要联系人通知</string>
+    <string name="notification_channel_description">来自重要微信联系人的通知</string>
+    <string name="service_description">监控微信通知并过滤非重要联系人</string>
+</resources>
