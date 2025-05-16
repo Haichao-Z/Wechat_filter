@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             }
         }, 1000)
 
-        showHuaweiOptimizationHint()
+        showDeviceOptimizationHint()
 
         // 添加测试功能
         testNotificationFiltering()
@@ -100,20 +100,67 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showHuaweiOptimizationHint() {
+    private fun showDeviceOptimizationHint() {
         val manufacturer = android.os.Build.MANUFACTURER.lowercase(java.util.Locale.getDefault())
-        if (manufacturer.contains("huawei") || manufacturer.contains("honor")) {
-            androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("重要设置")
-                .setMessage("在华为设备上，您还需要:\n" +
-                        "1. 进入设置 > 应用 > 本应用\n" +
-                        "2. 权限 > 自启动 (开启)\n" +
-                        "3. 电池 > 启动管理 (允许)\n" +
-                        "4. 电池 > 后台活动 (允许)\n" +
-                        "否则通知监听服务可能被系统关闭")
-                .setPositiveButton("我知道了", null)
-                .show()
+
+        when {
+            manufacturer.contains("huawei") || manufacturer.contains("honor") -> {
+                showDialog(
+                    "华为设备设置",
+                    "在华为设备上，您还需要:\n" +
+                            "1. 进入设置 > 应用 > 本应用\n" +
+                            "2. 权限 > 自启动 (开启)\n" +
+                            "3. 电池 > 启动管理 (允许)\n" +
+                            "4. 电池 > 后台活动 (允许)"
+                )
+            }
+            manufacturer.contains("xiaomi") || manufacturer.contains("redmi") -> {
+                showDialog(
+                    "小米设备设置",
+                    "在小米设备上，您还需要:\n" +
+                            "1. 进入设置 > 应用管理 > 本应用\n" +
+                            "2. 自启动 (开启)\n" +
+                            "3. 省电策略 > 无限制\n" +
+                            "4. 设置 > 电量和性能 > 应用省电管理 > 找到本应用并设为无限制"
+                )
+            }
+            manufacturer.contains("oppo") -> {
+                showDialog(
+                    "OPPO设备设置",
+                    "在OPPO设备上，您还需要:\n" +
+                            "1. 进入设置 > 应用管理 > 本应用\n" +
+                            "2. 自启动 (开启)\n" +
+                            "3. 电池 > 后台冻结 (关闭)\n" +
+                            "4. 多任务管理器中锁定本应用"
+                )
+            }
+            manufacturer.contains("vivo") -> {
+                showDialog(
+                    "vivo设备设置",
+                    "在vivo设备上，您还需要:\n" +
+                            "1. 进入设置 > 应用管理 > 本应用\n" +
+                            "2. 自启动 (开启)\n" +
+                            "3. 电池 > 后台高耗电 (允许)"
+                )
+            }
+            manufacturer.contains("samsung") -> {
+                showDialog(
+                    "三星设备设置",
+                    "在三星设备上，您还需要:\n" +
+                            "1. 进入设置 > 应用 > 本应用\n" +
+                            "2. 电池 > 允许后台活动\n" +
+                            "3. 设备维护 > 电池 > 未监视的应用 (添加本应用)"
+                )
+            }
         }
+    }
+
+    private fun showDialog(title: String, message: String) {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message + "\n\n否则通知监听服务可能被系统关闭")
+            .setPositiveButton("我知道了", null)
+            .show()
     }
 
     private fun updateServiceStatus() {
@@ -190,7 +237,8 @@ class MainActivity : AppCompatActivity() {
         editor.apply()
 
         // 发送广播通知服务联系人列表已更新
-        val intent = Intent("com.example.v2.CONTACT_LIST_CHANGED")
+        val intent = Intent(this, ContactListChangeReceiver::class.java)
+        intent.action = "com.example.v2.CONTACT_LIST_CHANGED"
         sendBroadcast(intent)
 
         // 尝试直接重启服务
@@ -287,5 +335,5 @@ class ContactAdapter(
         contacts = newContacts
         notifyDataSetChanged()
     }
-
+    
 }
