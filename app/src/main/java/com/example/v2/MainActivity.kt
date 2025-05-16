@@ -335,5 +335,4 @@ class ContactAdapter(
         contacts = newContacts
         notifyDataSetChanged()
     }
-
 }
