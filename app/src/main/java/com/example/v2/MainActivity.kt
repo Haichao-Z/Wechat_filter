@@ -236,6 +236,7 @@ class MainActivity : AppCompatActivity() {
         editor.putStringSet("allowed_contacts", HashSet(allowedContacts))
         editor.apply()
 
+        // 发送广播通知服务联系人列表已更新
         val intent = Intent(this, ContactListChangeReceiver::class.java)
         intent.action = "com.example.v2.CONTACT_LIST_CHANGED"
         sendBroadcast(intent)
