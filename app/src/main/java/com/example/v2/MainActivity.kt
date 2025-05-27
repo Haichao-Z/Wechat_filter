@@ -48,21 +48,6 @@ class MainActivity : AppCompatActivity() {
         showDeviceOptimizationHint()
 
         // 添加测试功能
-        testNotificationFiltering()
-
-        val testButton = findViewById<Button>(R.id.testButton)
-        testButton.setOnClickListener {
-            // 显示当前状态
-            val isEnabled = isNotificationServiceEnabled()
-            val message = "服务状态: ${if(isEnabled) "已启用" else "未启用"}\n" +
-                    "允许的联系人: $allowedContacts\n" +
-                    "若要添加测试联系人，请输入'老婆'并点击添加"
-
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-
-            // 强制刷新服务
-            saveAllowedContacts()
-        }
 
         checkDoNotDisturbPermission()
     }  // 添加右大括号关闭onCreate方法
@@ -77,26 +62,6 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
                 Toast.makeText(this, "请授予「微信提醒筛选器」免打扰访问权限以控制震动", Toast.LENGTH_LONG).show()
             }
-        }
-    }
-
-    private fun testNotificationFiltering() {
-        val testButton = findViewById<Button>(R.id.addContactButton)
-        testButton.setOnLongClickListener {
-            // 长按添加按钮进入测试模式
-            Toast.makeText(this, "正在测试通知过滤...", Toast.LENGTH_SHORT).show()
-
-            // 查询当前服务状态
-            val isEnabled = isNotificationServiceEnabled()
-            val contactsCount = allowedContacts.size
-
-            Toast.makeText(this,
-                "服务状态: ${if(isEnabled) "已启用" else "未启用"}\n" +
-                        "联系人: $contactsCount 个\n" +
-                        "请检查Logcat日志以获取更多信息",
-                Toast.LENGTH_LONG).show()
-
-            true
         }
     }
 

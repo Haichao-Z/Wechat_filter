@@ -1,12 +1,17 @@
 package com.example.v2
 
 import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.preference.PreferenceManager
 import java.util.HashSet
-import android.util.Log
 
 class NotificationFilterService : NotificationListenerService() {
 
@@ -22,6 +27,31 @@ class NotificationFilterService : NotificationListenerService() {
         // 从应用设置中加载允许接收通知的联系人列表
         loadAllowedContacts()
         createSilentChannel()
+
+        // 创建前台服务通知
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val serviceChannel = NotificationChannel(
+                "notification_filter_service",
+                "通知监听服务",
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                setSound(null, null)
+                enableVibration(false)
+            }
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(serviceChannel)
+
+            val notification = NotificationCompat.Builder(this, "notification_filter_service")
+                .setContentTitle("微信通知筛选")
+                .setContentText("服务正在运行中")
+                .setSmallIcon(R.drawable.ic_notification)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build()
+
+            startForeground(101, notification)
+        }
+
         Log.d(TAG, "通知监听服务已创建并初始化")
     }
 
