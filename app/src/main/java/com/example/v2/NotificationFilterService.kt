@@ -99,7 +99,7 @@ class NotificationFilterService : NotificationListenerService() {
                             android.os.Handler(mainLooper).postDelayed({
                                 notificationManager.setInterruptionFilter(currentInterruptionFilter)
                                 Log.d(TAG, "已恢复原始免打扰设置")
-                            }, 500) // 500毫秒后恢复
+                            }, 450) // 500毫秒后恢复
                         } else {
                             // 如果没有免打扰权限，只能取消通知
                             cancelNotification(sbn.key)
